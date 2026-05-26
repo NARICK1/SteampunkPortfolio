@@ -3,112 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Портфолио студента-программиста. Веб-разработка, стимпанк-дизайн, HTML, CSS, JavaScript.">
-    <title>Portfolio | Студент-программист</title>
+    <meta name="description" content="Steampunk портфолио — веб-разработчик Даниил. 3D сцена, кинематографичный дизайн.">
+    <title>Steampunk Portfolio | Карпов Даниил</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- ===== ФОНОВЫЙ СЛОЙ АНИМАЦИИ ===== -->
-<div class="bg-layers" aria-hidden="true">
-    <div class="bg-gear bg-gear--1" data-depth="0.08">
-        <svg viewBox="0 0 100 100">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
-    <div class="bg-gear bg-gear--2" data-depth="0.12">
-        <svg viewBox="0 0 100 100">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
-    <div class="bg-gear bg-gear--3" data-depth="0.18">
-        <svg viewBox="0 0 100 100">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
-    <div class="bg-gear bg-gear--4" data-depth="0.25">
-        <svg viewBox="0 0 100 100">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
-    <div class="bg-gear bg-gear--5" data-depth="0.15">
-        <svg viewBox="0 0 100 100" width="100%" height="100%">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
-    <div id="steamContainer"></div>
-</div>
+<div id="three-canvas-container" aria-hidden="true"></div>
 
-<!-- ===== ШАПКА ===== -->
+
 <header id="header">
     <div class="header-inner">
         <div class="logo">
             <div class="logo-icon">⚙</div>
-            <span>Steampunk<span style="color:var(--text-secondary)">Dev</span></span>
+            <span>Steampunk<span class="logo-accent">Dev</span></span>
         </div>
         <div class="header-right">
             <nav id="nav">
-                <a href="#" onclick="scrollToSection('hero')" class="active">Главная</a>
-                <a href="#" onclick="scrollToSection('about')">Обо мне</a>
-                <a href="#" onclick="scrollToSection('skills')">Навыки</a>
-                <a href="#" onclick="scrollToSection('projects')">Проекты</a>
-                <a href="#" onclick="scrollToSection('contacts')">Контакты</a>
-                <a href="#" onclick="scrollToSection('gallery')">Галерея</a>
-                <a href="#" onclick="scrollToSection('resume')">Резюме</a>
+                <a href="#" data-section="hero" class="active">Главная</a>
+                <a href="#" data-section="about">Обо мне</a>
+                <a href="#" data-section="skills">Навыки</a>
+                <a href="#" data-section="projects">Проекты</a>
+                <a href="#" data-section="contacts">Контакты</a>
+                <a href="#" data-section="gallery">Галерея</a>
+                <a href="#" data-section="resume">Резюме</a>
             </nav>
-            <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Меню">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="burger" id="burger" aria-label="Меню">
+                <span></span><span></span><span></span>
             </button>
         </div>
     </div>
 </header>
 
-<!-- Оверлей мобильного меню -->
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
-<!-- ===== HERO ===== -->
 <section class="hero" id="hero">
-    <div class="gear gear-1">
-        <svg class="gear-svg" viewBox="0 0 100 100" width="180" height="180">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
-    <div class="gear gear-2">
-        <svg class="gear-svg gear-svg-reverse" viewBox="0 0 100 100" width="120" height="120">
-            <path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/>
-            <circle cx="50" cy="47" r="18" fill="var(--bg-main)"/>
-        </svg>
-    </div>
+    <div class="hero-shimmer"></div>
     <div class="hero-content">
-        <div class="hero-label">⚡ Студент-программист</div>
+        <div class="hero-label">⚡ Веб-разработчик</div>
         <h1>Привет, я <span>Даниил</span></h1>
-        <p class="subtitle">начинающий веб-разработчик</p>
-        <p class="desc">Создаю стильные, адаптивные и производительные веб-интерфейсы. Сочетаю современные технологии с эстетикой.</p>
+        <p class="hero-subtitle">создаю цифровые механизмы</p>
+        <p class="hero-desc">Превращаю идеи в элегантные веб-интерфейсы. Каждый проект — точно настроенный механизм.</p>
         <div class="hero-btns">
-            <button class="btn btn-primary" onclick="scrollToSection('projects')">🚀 Смотреть проекты</button>
-            <button class="btn btn-outline" onclick="scrollToSection('contacts')">✉ Связаться</button>
+            <button class="btn btn-primary" data-scroll="projects">Смотреть проекты</button>
+            <button class="btn btn-outline" data-scroll="contacts">Связаться</button>
         </div>
-    </div>
-    <!-- Glass overlay для эффекта разбитого стекла -->
-    <div class="glass-overlay" id="glassOverlay" aria-hidden="true">
-        <div class="glass-lens" id="glassLens">
-            <div class="glass-lens-bg"></div>
-        </div>
-        <svg class="glass-cracks" id="glassCracks" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice"></svg>
-        <div class="glass-reflections" id="glassReflections"></div>
-        <div class="glass-perspective" id="glassPerspective"></div>
     </div>
 </section>
 
-<!-- ===== ОБО МНЕ ===== -->
 <section class="section" id="about">
     <div class="container">
         <div class="section-header">
@@ -124,7 +66,7 @@
             <div class="about-text reveal">
                 <h3>Студент, веб-разработчик, энтузиаст</h3>
                 <p>
-                    Меня зовут Даниил. Я студент 1-го курса направления «Информатика и искусственный интеллект».
+                    Меня зовут Карпов Даниил. Я студент УУНиТ'а 1-го курса направления «Информатика и искусственный интеллект».
                     Увлекаюсь веб-разработкой со школы — начал с простых HTML-страниц,
                     а сейчас создаю полноценные адаптивные сайты с анимациями и интерактивом.
                 </p>
@@ -151,7 +93,6 @@
     </div>
 </section>
 
-<!-- ===== НАВЫКИ ===== -->
 <section class="section" id="skills">
     <div class="container">
         <div class="section-header">
@@ -163,7 +104,6 @@
     </div>
 </section>
 
-<!-- ===== ПРОЕКТЫ ===== -->
 <section class="section" id="projects">
     <div class="container">
         <div class="section-header">
@@ -175,7 +115,6 @@
     </div>
 </section>
 
-<!-- ===== КОНТАКТЫ ===== -->
 <section class="section" id="contacts">
     <div class="container">
         <div class="section-header">
@@ -217,17 +156,17 @@
                 </div>
             </div>
             <div class="reveal">
-                <form class="contact-form" onsubmit="validateForm(event)">
+                <form class="contact-form" id="contactForm">
                     <h3>✉ Напишите мне</h3>
                     <div class="form-success" id="formSuccess"></div>
                     <div class="form-group">
                         <label for="name">Имя</label>
-                        <input type="text" name="name" id="name" placeholder="Ваше имя">
+                        <input type="text" name="name" id="name" placeholder="Ваше имя" autocomplete="name">
                         <div class="form-error" id="nameError">Пожалуйста, введите имя</div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" name="email" id="email" placeholder="ваш@email.ru">
+                        <input type="email" name="email" id="email" placeholder="ваш@email.ru" autocomplete="email">
                         <div class="form-error" id="emailError">Введите корректный email</div>
                     </div>
                     <div class="form-group">
@@ -235,16 +174,13 @@
                         <textarea name="message" id="message" placeholder="Ваше сообщение..."></textarea>
                         <div class="form-error" id="messageError">Напишите сообщение</div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
-                        ⚙ Отправить
-                    </button>
+                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">⚙ Отправить</button>
                 </form>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ===== ГАЛЕРЕЯ ===== -->
 <section class="section" id="gallery">
     <div class="container">
         <div class="section-header">
@@ -256,7 +192,6 @@
     </div>
 </section>
 
-<!-- ===== РЕЗЮМЕ ===== -->
 <section class="section" id="resume">
     <div class="container">
         <div class="section-header">
@@ -296,38 +231,22 @@
                 </div>
             </div>
             <div class="resume-download">
-                <button class="btn btn-primary" onclick="alert('Скачивание резюме (демо-версия)')">
-                    📄 Скачать резюме (PDF)
-                </button>
+                <button class="btn btn-primary" onclick="alert('Скачивание резюме (демо-версия)')">📄 Скачать резюме (PDF)</button>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ===== МОДАЛКА ПРОЕКТА ===== -->
-<div class="mobile-overlay" id="projectModal" onclick="closeModal()">
-    <div style="
-        position:absolute;
-        top:50%;left:50%;
-        transform:translate(-50%,-50%);
-        background:var(--bg-card);
-        border:1px solid var(--accent-dim);
-        border-radius:12px;
-        padding:32px;
-        max-width:420px;
-        width:90%;
-        cursor:default;
-    " onclick="event.stopPropagation()">
-        <h3 id="modalTitle" style="color:var(--accent);margin-bottom:12px">Проект</h3>
-        <p style="color:var(--text-secondary);margin-bottom:20px">Полное описание проекта будет добавлено. Это демонстрационная версия модального окна.</p>
-        <button class="btn btn-outline" onclick="closeModal()" style="width:100%;justify-content:center">Закрыть</button>
+<div class="modal-overlay" id="projectModal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="modalTitle" class="modal-title">Проект</h3>
+        <p class="modal-desc">Полное описание проекта будет добавлено. Это демонстрационная версия модального окна.</p>
+        <button class="btn btn-outline modal-close-btn" onclick="closeModal()">Закрыть</button>
     </div>
 </div>
 
-<!-- ===== КНОПКА НАВЕРХ ===== -->
-<button class="scroll-top" id="scrollTop" onclick="scrollToTop()" aria-label="Наверх">☝</button>
+<button class="scroll-top" id="scrollTop" aria-label="Наверх">☝</button>
 
-<!-- ===== ПОДВАЛ ===== -->
 <footer>
     <div class="container">
         <p>&copy; 2026 — Даниил | Portfolio. Все права защищены.</p>
@@ -340,6 +259,8 @@
     </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/three-scene.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>
