@@ -1,9 +1,141 @@
-/* ====================================================
+/* 
    script.js — Стимпанк-портфолио. Анимации, меню,
    форма, появление при скролле
-   ==================================================== */
+    */
+// Генерация 3D-шестерёнок
+function init3DGears() {
+    const container = document.getElementById('gearsContainer');
+    if (!container) return;
+    const gearsCount = window.innerWidth < 768 ? 12 : 28;
+    for (let i = 0; i < gearsCount; i++) {
+        const gear = document.createElement('div');
+        gear.className = 'gear-3d';
+        const size = 60 + Math.random() * 180;
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const duration = 6 + Math.random() * 12;
+        const delay = Math.random() * -20;
+        const drift = (Math.random() - 0.5) * 300;
+        gear.style.setProperty('--x', x + '%');
+        gear.style.setProperty('--y', y + '%');
+        gear.style.setProperty('--size', size + 'px');
+        gear.style.setProperty('--duration', duration + 's');
+        gear.style.setProperty('--delay', delay + 's');
+        gear.style.setProperty('--drift', drift + 'px');
+        gear.innerHTML = `<svg viewBox="0 0 100 100"><path d="M50 5 L55 20 L70 10 L75 26 L90 22 L85 38 L98 45 L85 55 L90 72 L75 68 L70 84 L55 74 L50 90 L45 74 L30 84 L25 68 L10 72 L15 55 L2 45 L15 38 L10 22 L25 26 L30 10 L45 20 Z" fill="currentColor"/><circle cx="50" cy="47" r="18" fill="var(--bg-main)"/></svg>`;
+        container.appendChild(gear);
+    }
+}
 
-// ----- БУРГЕР-МЕНЮ -----
+// 3D-эффект стекла с трещинами в перспективе
+function initGlass3D() {
+    const glass = document.getElementById('glass3d');
+    const surface = document.getElementById('glassSurface');
+    const cracksContainer = document.getElementById('glassCracks3d');
+    if (!glass || !surface) return;
+    let active = false;
+    let mouseX = 0, mouseY = 0;
+    let targetRotateX = 0, targetRotateY = 0;
+    let currentRotateX = 0, currentRotateY = 0;
+
+    // Генерация 3D-трещин
+    function generateCracks3D() {
+        cracksContainer.innerHTML = '';
+        const numCracks = 12 + Math.floor(Math.random() * 9);
+        for (let i = 0; i < numCracks; i++) {
+            const crack = document.createElement('div');
+            crack.className = 'crack-3d';
+            const x1 = 20 + Math.random() * 60;
+            const y1 = 20 + Math.random() * 60;
+            const angle = Math.random() * 360;
+            const length = 30 + Math.random() * 120;
+            const width = 1 + Math.random() * 2;
+            const depth = -20 + Math.random() * 40;
+            crack.style.left = x1 + '%';
+            crack.style.top = y1 + '%';
+            crack.style.width = length + 'px';
+            crack.style.height = width + 'px';
+            crack.style.transform = `rotate(${angle}deg) translateZ(${depth}px)`;
+            cracksContainer.appendChild(crack);
+
+            // ответвления
+            if (Math.random() > 0.6) {
+                const branch = document.createElement('div');
+                branch.className = 'crack-3d';
+                const subLen = length * (0.3 + Math.random() * 0.5);
+                const subAngle = angle + (Math.random() - 0.5) * 70;
+                branch.style.left = (x1 + (length * Math.cos(angle * Math.PI/180) / window.innerWidth * 100)) + '%';
+                branch.style.top = (y1 + (length * Math.sin(angle * Math.PI/180) / window.innerHeight * 100)) + '%';
+                branch.style.width = subLen + 'px';
+                branch.style.height = (width * 0.7) + 'px';
+                branch.style.transform = `rotate(${subAngle}deg) translateZ(${depth + 10}px)`;
+                cracksContainer.appendChild(branch);
+            }
+        }
+    }
+
+    // Активация при наведении на hero
+    const hero = document.getElementById('hero');
+    hero.addEventListener('mouseenter', (e) => {
+        active = true;
+        glass.classList.add('active');
+        generateCracks3D();
+        requestAnimationFrame(animate);
+    });
+    hero.addEventListener('mousemove', (e) => {
+        if (!active) return;
+        const rect = hero.getBoundingClientRect();
+        mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+        targetRotateX = mouseY * 12;
+        targetRotateY = mouseX * 12;
+    });
+    hero.addEventListener('mouseleave', () => {
+        active = false;
+        glass.classList.remove('active');
+        targetRotateX = 0; targetRotateY = 0;
+    });
+
+    function animate() {
+        currentRotateX += (targetRotateX - currentRotateX) * 0.12;
+        currentRotateY += (targetRotateY - currentRotateY) * 0.12;
+        surface.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg) translateZ(5px)`;
+        requestAnimationFrame(animate);
+    }
+}
+
+// Скролл-контроль скорости шестерёнок
+function initScrollSpeedControl() {
+    const gears = document.querySelectorAll('.gear-3d');
+    let lastScrollY = window.scrollY;
+    let speedFactor = 1;
+    window.addEventListener('scroll', () => {
+        const delta = Math.abs(window.scrollY - lastScrollY);
+        speedFactor = 1 + Math.min(delta / 200, 1.5);
+        gears.forEach(gear => {
+            let anim = gear.style.animation;
+            let duration = parseFloat(gear.style.getPropertyValue('--duration'));
+            if (duration) {
+                let newDuration = duration / speedFactor;
+                gear.style.animationDuration = newDuration + 's';
+            }
+        });
+        lastScrollY = window.scrollY;
+    });
+}
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+    init3DGears();
+    initGlass3D();
+    initScrollSpeedControl();
+    // остальные инициализации (рендер навыков, проектов, галереи) остаются
+    renderSkills();
+    renderProjects();
+    renderGallery();
+    // … существующие вызовы handleScroll, initHeroMouseParallax и т.д.
+});
+// БУРГЕР-МЕНЮ 
 function toggleMenu() {
     const nav = document.getElementById('nav');
     const burger = document.getElementById('burger');
@@ -21,7 +153,7 @@ function closeMenu() {
     document.body.style.overflow = '';
 }
 
-// ----- ПЛАВНАЯ ПРОКРУТКА К СЕКЦИЯМ -----
+// ПЛАВНАЯ ПРОКРУТКА К СЕКЦИЯМ 
 function scrollToSection(id) {
     closeMenu();
     const el = document.getElementById(id);
@@ -30,12 +162,12 @@ function scrollToSection(id) {
     }
 }
 
-// ----- КНОПКА НАВЕРХ -----
+// КНОПКА НАВЕРХ
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ----- ОБРАБОТКА СКРОЛЛА -----
+// ОБРАБОТКА СКРОЛЛА
 function handleScroll() {
     // Кнопка наверх
     const btn = document.getElementById('scrollTop');
@@ -61,7 +193,7 @@ function handleScroll() {
     });
 }
 
-// ----- ВАЛИДАЦИЯ ФОРМЫ -----
+// ВАЛИДАЦИЯ ФОРМЫ
 function validateForm(event) {
     event.preventDefault();
     const form = event.target;
@@ -97,7 +229,7 @@ function validateForm(event) {
     }
 }
 
-// ----- ДАННЫЕ ДЛЯ НАВЫКОВ -----
+// ДАННЫЕ ДЛЯ НАВЫКОВ 
 const skillsData = [
     { name: 'HTML5 / CSS3', percent: 90, icon: '🌐' },
     { name: 'JavaScript', percent: 80, icon: '⚡' },
@@ -107,7 +239,7 @@ const skillsData = [
     { name: 'Python (основы)', percent: 60, icon: '🐍' },
 ];
 
-// ----- ДАННЫЕ ДЛЯ ПРОЕКТОВ -----
+// ДАННЫЕ ДЛЯ ПРОЕКТОВ 
 const projectsData = [
     {
         title: 'Интернет-магазин CosmoRing',
@@ -122,9 +254,9 @@ const projectsData = [
         icon: '⚙️',
     },
     {
-        title: 'Калькулятор на JavaScript',
-        desc: 'Веб-калькулятор с поддержкой базовых операций, историей вычислений и переключением темы.',
-        tags: ['HTML', 'CSS', 'JavaScript'],
+        title: 'Android приложения',
+        desc: 'Автокликер на java, календарь, список покупок/задач',
+        tags: ['Java, Android Studio'],
         icon: '🧮',
     },
     {
@@ -135,7 +267,7 @@ const projectsData = [
     },
 ];
 
-// ----- ДАННЫЕ ДЛЯ ГАЛЕРЕИ -----
+// ДАННЫЕ ДЛЯ ГАЛЕРЕИ
 const galleryData = [
     { label: 'Сертификат HTML Academy', icon: '📜' },
     { label: 'Диплом олимпиады по веб-дизайну', icon: '🏆' },
@@ -145,7 +277,7 @@ const galleryData = [
     { label: 'Дизайн-конкурс', icon: '🎨' },
 ];
 
-// ----- РЕНДЕР НАВЫКОВ -----
+// РЕНДЕР НАВЫКОВ 
 function renderSkills() {
     const grid = document.getElementById('skillsGrid');
     if (!grid) return;
@@ -167,7 +299,7 @@ function renderSkills() {
     });
 }
 
-// ----- РЕНДЕР ПРОЕКТОВ -----
+//  РЕНДЕР ПРОЕКТОВ 
 function renderProjects() {
     const grid = document.getElementById('projectsGrid');
     if (!grid) return;
@@ -194,7 +326,7 @@ function renderProjects() {
     });
 }
 
-// ----- РЕНДЕР ГАЛЕРЕИ -----
+//  РЕНДЕР ГАЛЕРЕИ 
 function renderGallery() {
     const grid = document.getElementById('galleryGrid');
     if (!grid) return;
@@ -210,7 +342,7 @@ function renderGallery() {
     });
 }
 
-// ----- МОДАЛЬНОЕ ОКНО (ДЛЯ ПРОЕКТОВ) -----
+// МОДАЛЬНОЕ ОКНО ДЛЯ ПРОЕКТОВ
 function showModal(projectName) {
     const modal = document.getElementById('projectModal');
     const title = document.getElementById('modalTitle');
@@ -229,7 +361,7 @@ function closeModal() {
     }
 }
 
-// ----- ПАР/ДЫМ (ЧАСТИЦЫ) -----
+// ПАР/ДЫМ (ЧАСТИЦЫ)
 function createSteamParticles() {
     const container = document.getElementById('steamContainer');
     if (!container) return;
@@ -255,7 +387,7 @@ function createSteamParticles() {
     }
 }
 
-// ----- ПАРАЛЛАКС ПРИ СКРОЛЛЕ -----
+// ПАРАЛЛАКС ПРИ СКРОЛЛЕ 
 function handleBgParallax() {
     const scrolled = window.scrollY;
     document.querySelectorAll('.bg-gear').forEach(gear => {
@@ -265,7 +397,7 @@ function handleBgParallax() {
     });
 }
 
-// ----- MOUSE-ПАРАЛЛАКС В HERO -----
+// MOUSE-ПАРАЛЛАКС В HERO 
 function initHeroMouseParallax() {
     const hero = document.getElementById('hero');
     if (!hero) return;
@@ -288,7 +420,7 @@ function initHeroMouseParallax() {
     });
 }
 
-// ----- MOUSE-СЛЕЖЕНИЕ ДЛЯ CARD-ЭФФЕКТОВ -----
+//  MOUSE-СЛЕЖЕНИЕ ДЛЯ CARD-ЭФФЕКТОВ 
 function initCardMouseTracking() {
     document.querySelectorAll('.skill-card').forEach(card => {
         card.addEventListener('mousemove', function (e) {
@@ -301,7 +433,7 @@ function initCardMouseTracking() {
     });
 }
 
-// ----- ЭФФЕКТ РАЗБИТОГО СТЕКЛА (BROKEN GLASS) -----
+//  ЭФФЕКТ РАЗБИТОГО СТЕКЛА (BROKEN GLASS) 
 function initGlassEffect() {
     const hero = document.getElementById('hero');
     const overlay = document.getElementById('glassOverlay');
@@ -532,7 +664,7 @@ function initGlassEffect() {
     });
 }
 
-// ----- ИНИЦИАЛИЗАЦИЯ -----
+// ИНИЦИАЛИЗАЦИЯ 
 document.addEventListener('DOMContentLoaded', function () {
     renderSkills();
     renderProjects();
